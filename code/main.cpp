@@ -128,6 +128,7 @@ double getCMDValue(const char* cmd) {
 // highest eigenvalue of the matrix product by LIS 
 double highestEigenValueLIS(MatrixXd A){
  
+
     exportMatrixToMTX(A, "ATA-product.mtx");
  const char *computelargesteigen ="mpirun -n 1 ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e pi -tol 1.0e-8 ";
   system(computelargesteigen);
@@ -142,22 +143,43 @@ return largestEigenValue;
 // Compare the result of the highest eigenvalue of the matrix product by LIS and task 2 Single Value
 
 void areValuesClose(double A, double B){
-    
+   double midpoint = (A / 2) ;
       A=sqrt(A);
     cout << "Sqaure Root Eigenvalue by LIS: " << A << endl;
-  
+   
 
     cout << "\nSingle Value by Eigen library: " << B << endl;
     double diff = fabs(A - B);
 
     if (diff < 0.0001) {
-        cout << "The two values are approximately equal." << endl;
+        cout << "The two values are approximately equal." << "Mid-point:" << midpoint << endl;
     } else {
         cout << "The two values are not equal." <<diff << endl;
     }
 }
 
+// Task 4 
 
+void task4_shiftIterativeSolver(){
+     const char *computelargesteigen ="mpirun -n 1 ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e pi -tol 1.0e-8 -shift 0.0696663";
+  system(computelargesteigen);
+}
+
+void task5_SVD(MatrixXd A){
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    
+    // Step 1: Get the singular values
+    Eigen::VectorXd singularValues = svd.singularValues();
+    
+    // Step 2: Compute the Euclidean norm of the singular values
+    double euclideanNorm = singularValues.norm();
+    
+    // Step 3: Print the result
+    std::cout << "The Euclidean norm of the singular values is: " << euclideanNorm << std::endl;
+
+    
+
+}
 
  
 
@@ -301,6 +323,13 @@ int main(int argc, char *argv[]){
    double A_Eigen_Value=highestEigenValueLIS(product);
 
     areValuesClose( A_Eigen_Value,singularValues[0]); 
+   
+     // -- Task 4
+    cout << "\n--------TASK 4---------- Not sure\n";
+    task4_shiftIterativeSolver();
  
+   // -- Task 5
+    cout << "\n--------TASK 5----------\n";
+    task5_SVD(image_matrix);
      return 0;
 }
