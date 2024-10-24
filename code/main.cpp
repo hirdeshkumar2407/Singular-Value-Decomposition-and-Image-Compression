@@ -161,23 +161,67 @@ void areValuesClose(double A, double B){
 // Task 4 
 
 void task4_shiftIterativeSolver(){
-     const char *computelargesteigen ="mpirun -n 1 ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e pi -tol 1.0e-8 -shift 0.0696663";
+     const char *computelargesteigen ="mpirun -n 1 ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e ii -tol 1.0e-8 -shift 1.045818e+09" ;
   system(computelargesteigen);
 }
 
-void task5_SVD(MatrixXd A){
-    Eigen::JacobiSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
+JacobiSVD<MatrixXd> task5_SVD(MatrixXd A){
+    JacobiSVD<MatrixXd> svd(A, Eigen::ComputeFullU | Eigen::ComputeFullV);
     
     // Step 1: Get the singular values
-    Eigen::VectorXd singularValues = svd.singularValues();
+    VectorXd singularValues = svd.singularValues();
     
     // Step 2: Compute the Euclidean norm of the singular values
     double euclideanNorm = singularValues.norm();
     
     // Step 3: Print the result
-    std::cout << "The Euclidean norm of the singular values is: " << euclideanNorm << std::endl;
+    cout << "The Euclidean norm of the singular values is: " << euclideanNorm << std::endl;
 
+    return svd;
+
+}
+
+// Task 6
+void computeNonZerosWithK(JacobiSVD<MatrixXd> svd, int k){
+        MatrixXd U = svd.matrixU();
+        MatrixXd V = svd.matrixV();
     
+        VectorXd S = svd.singularValues();
+       // MatrixXd Sigma = Sigma.topLeftCorner(k,k);
+        //MatrixXd Sigma = MatrixXd::Zero(k,k); // m x n
+        //Sigma.diagonal().head(S.size()) = S;
+
+        int rank = S.size();  // This is the rank of the matrix
+       // Adjust k if it exceeds the rank
+        if (k > rank) {
+            cout << "k is greater than the rank of the matrix. Adjusting k to rank: " << rank << endl;
+            k = rank;
+        }
+    
+        // cout << "U dimensions: " << U.rows() << " x " << U.cols() << endl;
+        // cout << "V dimensions: " << V.rows() << " x " << V.cols() << endl;
+        // cout << "S dimensions: " << S.rows() << " x " << S.cols() << endl;
+        cout << "S dimensions: " << S.rows() << " x " << S.cols() << endl;
+        MatrixXd c = U.leftCols(k);
+        MatrixXd d = V.leftCols(k) * S.head(k).asDiagonal();
+
+        //V = V.leftCols(k);
+        //S = S.diagonal().head(k).asDiagonal();
+        //VectorXd flattened_s = Map<const VectorXd>(Sigma.data(), Sigma.size());
+       // flattened_s = flattened_s.head(k);
+        
+        // MatrixXd D = MatrixXd::Zero(U.rows(), k); // m x k
+        // for (int i = 0; i < k; i++) {
+        //     cout << "i: " << i << ", Singular Value: " << S(i) << endl;
+        //     D.col(i) = flattened_s(i) * V.col(i); // Scale each column of V_k by the corresponding singular value
+        // }
+
+        int nonZeroElementsC = c.nonZeros();
+       int nonZeroElementsD = d.nonZeros();
+
+        // Print the result
+        cout << "Non-zero elements of C with k= " << k << "  are: \n" << nonZeroElementsC << endl;
+        cout << "Non-zero elements of D with k= " << k << "  are: \n" << nonZeroElementsD << endl;
 
 }
 
@@ -330,6 +374,12 @@ int main(int argc, char *argv[]){
  
    // -- Task 5
     cout << "\n--------TASK 5----------\n";
-    task5_SVD(image_matrix);
-     return 0;
+    JacobiSVD<MatrixXd> svd = task5_SVD(image_matrix);
+
+    // -- Task 6
+    cout << "\n--------TASK 6----------\n";
+    computeNonZerosWithK(svd, 40);
+    computeNonZerosWithK(svd, 80);
+
+    return 0;
 }
