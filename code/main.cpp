@@ -42,6 +42,27 @@ tuple<int, int, int, unsigned char *> getImageDimensions(char *input_image_path)
     return make_tuple(width, height, channels, image_data);
 }
 
+// export image in .png format
+void normalizeExportImage(unsigned char *image_data, const string &image_name, const string &ext, const MatrixXd &image, int width, int height)
+{
+
+    // Create an Eigen matrix to hold the transformed image in unsigned char format
+    Matrix<unsigned char, Dynamic, Dynamic, RowMajor> transform_image(height, width);
+
+    // Map the matrix values to the grayscale range [0, 255]
+  transform_image = image.unaryExpr([](double val) -> unsigned char
+        {
+            return static_cast<unsigned char>(std::min(std::max(val, 0.0), 255.0)); // Ensure values stay in [0, 255]
+        });
+
+    string output_image_path = "results/" + image_name + "." + ext;
+
+    cout << "image created: " << output_image_path << endl;
+    if (stbi_write_png(output_image_path.c_str(), width, height, 1, transform_image.data(), width) == 0)
+    {
+        cerr << "Error: Could not save grayscale image" << endl;
+    }
+}
 
 // Task1 Matrix and Transpose multiplcation and norm 
 MatrixXd task1_productnorm(MatrixXd &A)
@@ -133,7 +154,7 @@ double highestEigenValueLIS(MatrixXd A){
  const char *computelargesteigen ="mpirun -n 1 ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e pi -tol 1.0e-8 ";
   system(computelargesteigen);
 
-  double largestEigenValue=getCMDValue("mpirun -n 1 ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e pi -tol 1.0e-8  | grep 'Power: eigenvalue' | awk '{print $4}'");
+  double largestEigenValue=getCMDValue("mpirun -n 1  ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e pi -tol 1.0e-8  | grep 'Power: eigenvalue' | awk '{print $4}'");
 
 cout << "The largest eigenvalue of the A and A transpose matrix product by LIS library method is: " << largestEigenValue << endl;
 
@@ -161,12 +182,12 @@ void areValuesClose(double A, double B){
 // Task 4 
 
 void task4_shiftIterativeSolver(){
-     const char *computelargesteigen ="mpirun -n 1 ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e ii -tol 1.0e-8 -shift 1.045818e+09" ;
+     const char *computelargesteigen ="mpirun -n 1  ./iterativesolver ATA-product.mtx eigvec.txt hist.txt -e ii -tol 1.0e-8 -shift 1.045818e+09" ;
   system(computelargesteigen);
 }
 
-JacobiSVD<MatrixXd> task5_SVD(MatrixXd A){
-    JacobiSVD<MatrixXd> svd(A, Eigen::ComputeFullU | Eigen::ComputeFullV);
+JacobiSVD<MatrixXd> SVD(MatrixXd A){
+    JacobiSVD<MatrixXd> svd(A, Eigen::ComputeThinU | Eigen::ComputeThinV);
     
     // Step 1: Get the singular values
     VectorXd singularValues = svd.singularValues();
@@ -182,14 +203,11 @@ JacobiSVD<MatrixXd> task5_SVD(MatrixXd A){
 }
 
 // Task 6
-void computeNonZerosWithK(JacobiSVD<MatrixXd> svd, int k){
+pair<MatrixXd, MatrixXd> createCD(JacobiSVD<MatrixXd> svd, int k){
+    cout << " -- starting construction of C and D matrices with k= " << k << "--\n";
         MatrixXd U = svd.matrixU();
         MatrixXd V = svd.matrixV();
-    
         VectorXd S = svd.singularValues();
-       // MatrixXd Sigma = Sigma.topLeftCorner(k,k);
-        //MatrixXd Sigma = MatrixXd::Zero(k,k); // m x n
-        //Sigma.diagonal().head(S.size()) = S;
 
         int rank = S.size();  // This is the rank of the matrix
        // Adjust k if it exceeds the rank
@@ -197,135 +215,93 @@ void computeNonZerosWithK(JacobiSVD<MatrixXd> svd, int k){
             cout << "k is greater than the rank of the matrix. Adjusting k to rank: " << rank << endl;
             k = rank;
         }
-    
-        // cout << "U dimensions: " << U.rows() << " x " << U.cols() << endl;
-        // cout << "V dimensions: " << V.rows() << " x " << V.cols() << endl;
-        // cout << "S dimensions: " << S.rows() << " x " << S.cols() << endl;
+
         cout << "S dimensions: " << S.rows() << " x " << S.cols() << endl;
         MatrixXd c = U.leftCols(k);
         MatrixXd d = V.leftCols(k) * S.head(k).asDiagonal();
 
-        //V = V.leftCols(k);
-        //S = S.diagonal().head(k).asDiagonal();
-        //VectorXd flattened_s = Map<const VectorXd>(Sigma.data(), Sigma.size());
-       // flattened_s = flattened_s.head(k);
-        
-        // MatrixXd D = MatrixXd::Zero(U.rows(), k); // m x k
-        // for (int i = 0; i < k; i++) {
-        //     cout << "i: " << i << ", Singular Value: " << S(i) << endl;
-        //     D.col(i) = flattened_s(i) * V.col(i); // Scale each column of V_k by the corresponding singular value
-        // }
-
         int nonZeroElementsC = c.nonZeros();
-       int nonZeroElementsD = d.nonZeros();
+        int nonZeroElementsD = d.nonZeros();
+
+        cout << "C dimensions: " << c.rows() << " x " << c.cols() << endl;
+        cout << "D dimensions: " << d.rows() << " x " << d.cols() << endl;
 
         // Print the result
         cout << "Non-zero elements of C with k= " << k << "  are: \n" << nonZeroElementsC << endl;
         cout << "Non-zero elements of D with k= " << k << "  are: \n" << nonZeroElementsD << endl;
-
+   
+   return make_pair(c, d);
 }
 
- 
-
-// export image in .png format
-void exportimagenotnormalise(unsigned char *image_data, const string &image_name, const string &ext, const MatrixXd &image, int width, int height)
+MatrixXd computeExportCompressedImage(pair<MatrixXd, MatrixXd> cd, const string &filename)
 {
+    MatrixXd C = cd.first;
+    MatrixXd D = cd.second;
+   
+    MatrixXd DT= D.transpose();
 
-    // Create an Eigen matrix to hold the transformed image in unsigned char format
-    Matrix<unsigned char, Dynamic, Dynamic, RowMajor> transform_image(height, width);
+    
+    cout << "C dimensions: " << C.rows() << " x " << C.cols() << endl;
+    cout << "D dimensions: " << DT.rows() << " x " << DT.cols() << endl;
+    MatrixXd compressedA = C * DT;
 
-    // Map the matrix values to the grayscale range [0, 255]
-    transform_image = image.unaryExpr([](double val) -> unsigned char
-        {
-            return static_cast<unsigned char>(std::min(std::max(val, 0.0), 255.0)); // Ensure values stay in [0, 255]
-        });
+    // cout << "Compressed A: \n" <<compressedA << endl;
+    cout << "Compressed Image dimensions: " << compressedA.rows() << " x " << compressedA.cols() << endl;
 
-    string output_image_path = "results/" + image_name + "." + ext;
+    // Export the compressed matrix to .mtx file
+    normalizeExportImage(nullptr, filename, "png", compressedA, compressedA.cols(),compressedA.rows());
 
-    cout << "image created: " << output_image_path << endl;
-    if (stbi_write_png(output_image_path.c_str(), width, height, 1, transform_image.data(), width) == 0)
+    return compressedA;
+}
+MatrixXd createCheckerBoard(int img_size,int square_size){
+
+   
+ 
+ MatrixXd checkerboard(img_size, img_size);
+    for (int i = 0; i < img_size; ++i)
     {
-        cerr << "Error: Could not save grayscale image" << endl;
+        for (int j = 0; j < img_size; ++j)
+        {
+            if (((i / square_size) % 2 == 0 && (j / square_size) % 2 == 0) || ((i / square_size) % 2 == 1 && (j / square_size) % 2 == 1) )
+            {
+                checkerboard(i, j) = 0;
+            }
+            else
+            {
+                checkerboard(i, j) = 255;
+            }
+        }
     }
+
+    normalizeExportImage(nullptr, "checkerboard", "png", checkerboard, 200, 200);
+
+    return checkerboard;
 }
 
-// Function to convert MatrixXd to a VectorXd
-VectorXd convertMatrixToVector(const MatrixXd &image_matrix)
+MatrixXd addNoisetoImage(int width, int height, MatrixXd image_matrix)
 {
-    VectorXd flattened_image = Map<const VectorXd>(image_matrix.data(), image_matrix.size());
-    // Use Map<const VectorXd> instead of Map<VectorXd> because image_matrix.data() returns a const double* (read-only pointer).
-    // Eigen allows you to use the Map class to reinterpret the matrix's underlying data as a vector without explicitly copying the data.
-    // image_matrix.data() gives a pointer to the matrix's data stored in memory.
-    // image_matrix.size() gives the total number of elements in the matrix (i.e., rows * cols).
-    // Map<VectorXd> constructs a VectorXd that views the matrix's data as a 1D vector.
-    return flattened_image;
+    MatrixXd noise(height, width);
+    noise.setRandom();                   // Fill the matrix with random values between -1 and 1
+    noise = noise * 50.0;                // Scale the noise to be between -50 and 50
+    image_matrix = image_matrix + noise; // Add the noise to the original image
+    
+    normalizeExportImage(nullptr, "noisy_image", "png", image_matrix, width, height);
+    return image_matrix;
 }
 
-MatrixXd spMatrixVectorMultiplication(const SparseMatrix<double> &sp_matrix, const VectorXd &vec, int width, int height)
-{
-    VectorXd result = sp_matrix * vec;
-    MatrixXd resultmat = Map<MatrixXd>(result.data(), height, width);
-    return resultmat;
-}
+void computeLargestSingularEigenValues(MatrixXd singularValues, int numberOfValues){
 
-bool isSymmetric(const SparseMatrix<double>& matrix) {
-    if (matrix.rows() != matrix.cols()) {
-        return false;  // A non-square matrix cannot be symmetric
+    cout << "The " << numberOfValues << " largest singular values are: " << endl;
+    for (int i = 0; i < numberOfValues; ++i) {
+        cout << singularValues(i) << endl;
     }
-
-    SparseMatrix<double> transposeMatrix = matrix.transpose();
-    return matrix.isApprox(transposeMatrix);
-}
-
-
-void exportVectortomtx(const VectorXd &v, const char*  filename)
-{
-    int n = v.size();
-    FILE* out = fopen(filename,"w");
-    fprintf(out,"%%%%MatrixMarket vector coordinate real general\n");
-    fprintf(out,"%d\n", n);
-    for (int i=0; i<n; i++) {
-        fprintf(out,"%d %f\n", i ,v(i));
-    }
-    fclose(out);
-        cout << filename << " vector exported successfully"  << endl;
-
-}
-
-VectorXd loadVectorFromMTX(const string &filename) {
-    // Load the vector from file
-    ifstream file(filename);
-
-    if (!file.is_open()) {
-        cerr << "Error opening file: " << filename << endl;
-        return VectorXd();
-    }
-
-    string line;
-    getline(file, line); // Skip the first line (MatrixMarket header)
-
-    int numEntries;
-    file >> numEntries;
-
-    VectorXd vec(numEntries);
-    for (int i = 0; i < numEntries; ++i) {
-        int index;
-        double value;
-
-        file >> index >> value;
-        vec[index - 1] = value;  // Convert to 0-based indexing
-    }
-
-    file.close();
-    return vec;
 }
  
-MatrixXd exportVectorMTXto2DMatrix(const char*  filename, int height, int width)
+double computeMeanSquareError(const MatrixXd &image1, const MatrixXd &image2)
 {
-    VectorXd vec=loadVectorFromMTX(filename);
- 
-    MatrixXd resultmat = Map<MatrixXd>(vec.data(), height, width);
-    return resultmat;
+    double mse = (image1 - image2).squaredNorm() / image1.size();
+    return mse;
+    
 }
 
 
@@ -374,12 +350,58 @@ int main(int argc, char *argv[]){
  
    // -- Task 5
     cout << "\n--------TASK 5----------\n";
-    JacobiSVD<MatrixXd> svd = task5_SVD(image_matrix);
+    JacobiSVD<MatrixXd> svdA = SVD(image_matrix);
 
     // -- Task 6
     cout << "\n--------TASK 6----------\n";
-    computeNonZerosWithK(svd, 40);
-    computeNonZerosWithK(svd, 80);
+    pair<MatrixXd, MatrixXd> cd40= createCD(svdA, 40);
+    pair<MatrixXd, MatrixXd> cd80= createCD(svdA, 80);
 
+      // -- Task 7
+    cout << "\n--------TASK 7----------\n";
+    MatrixXd compressedA40 = computeExportCompressedImage(cd40, "compressedA40");
+    MatrixXd compressedA80 =computeExportCompressedImage(cd80, "compressedA80");
+
+    // -- Task 8
+    cout << "\n--------TASK 8----------\n";
+    MatrixXd checkerboard=createCheckerBoard(200,25);
+
+     // -- Task 9
+    cout << "\n--------TASK 9----------\n";
+    MatrixXd noisyCheckerBoard=addNoisetoImage(200, 200, checkerboard);
+
+    // -- Task 10
+    cout << "\n--------TASK 10----------\n";
+    JacobiSVD<MatrixXd> svd_checkerboard = SVD(noisyCheckerBoard);
+    VectorXd eigenvalues_checkerboard = svd_checkerboard.singularValues();
+    computeLargestSingularEigenValues(eigenvalues_checkerboard, 2);
+
+    // -- Task 11
+    cout << "\n--------TASK 11----------\n";
+    pair<MatrixXd, MatrixXd> cd5= createCD(svd_checkerboard, 5);
+    pair<MatrixXd, MatrixXd> cd10= createCD(svd_checkerboard, 10);
+
+    // -- Task 12
+    cout << "\n--------TASK 12----------\n";
+    MatrixXd compressedchb5 =computeExportCompressedImage(cd5, "compressedCheckerBoard5");
+    MatrixXd compressedchb10 =computeExportCompressedImage(cd10, "compressedCheckerBoard10");
+
+   // -- Task 13
+   // Comparsing the compressed image with the original image
+    cout << "\n--------TASK 13----------\n";
+    double mse_compressed5 = computeMeanSquareError(checkerboard,compressedchb5);
+    cout << "Mean Square Error between original checkerboard and compressed checkerboard with k=5: " << mse_compressed5 << endl;
+    
+    double mse_compressed10 = computeMeanSquareError(checkerboard,compressedchb10);
+    cout << "Mean Square Error between original checkerboard and compressed checkerboard with k=10: " << mse_compressed10 << endl;
+
+    double mse_noisy = computeMeanSquareError(checkerboard,noisyCheckerBoard);
+    cout << "Mean Square Error between original checkerboard and noisy checkerboard: " << mse_noisy << endl;
+
+    double mse_A40 = computeMeanSquareError(image_matrix,compressedA40);
+    cout << "Mean Square Error between original image and compressed image with k=40: " << mse_A40 << endl;
+
+     double mse_A80 = computeMeanSquareError(image_matrix,compressedA80);
+    cout << "Mean Square Error between original image and compressed image with k=80: " << mse_A80 << endl;
     return 0;
 }

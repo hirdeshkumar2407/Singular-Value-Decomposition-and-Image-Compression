@@ -1,0 +1,146 @@
+
+--------TASK 1----------
+Norm of A and A transpose: 
+1050410679
+
+--------TASK 2----------
+The two largest singular values by Eigen library method are: 32339.1 and 9523.1
+
+--------TASK 3----------
+A and A transpose matrix successfully exported to ATA-product.mtx
+
+number of processes = 1
+matrix size = 256 x 256 (65536 nonzero entries)
+
+initial vector x      : all components set to 1
+precision             : double
+eigensolver           : Power
+convergence condition : ||lx-(B^-1)Ax||_2 <= 1.0e-12 * ||lx||_2
+matrix storage format : CSR
+shift                 : 0.000000e+00
+eigensolver status    : normal end
+
+Power: mode number          = 0
+Power: eigenvalue           = 1.045818e+09
+Power: number of iterations = 12
+Power: elapsed time         = 8.506250e-04 sec.
+Power:   preconditioner     = 0.000000e+00 sec.
+Power:     matrix creation  = 0.000000e+00 sec.
+Power:   linear solver      = 0.000000e+00 sec.
+Power: relative residual    = 1.054313e-13
+
+The largest eigenvalue of the A and A transpose matrix product by LIS library method is: 1.04582e+09
+Sqaure Root Eigenvalue by LIS: 32339.1
+
+Single Value by Eigen library: 32339.1
+The two values are not equal.0.00600781
+
+--------TASK 4---------- Not sure
+
+number of processes = 1
+matrix size = 256 x 256 (65536 nonzero entries)
+
+initial vector x      : all components set to 1
+precision             : double
+eigensolver           : Inverse
+convergence condition : ||lx-(B^-1)Ax||_2 <= 1.0e-12 * ||lx||_2
+matrix storage format : CSR
+shift                 : 1.045818e+09
+linear solver         : BiCG
+preconditioner        : none
+eigensolver status    : normal end
+
+Inverse: mode number          = 0
+Inverse: eigenvalue           = 1.045818e+09
+Inverse: number of iterations = 3
+Inverse: elapsed time         = 5.679960e-03 sec.
+Inverse:   preconditioner     = 6.991000e-06 sec.
+Inverse:     matrix creation  = 5.500000e-07 sec.
+Inverse:   linear solver      = 3.639893e-03 sec.
+Inverse: relative residual    = 3.545967e-14
+
+
+--------TASK 5----------
+The Euclidean norm of the singular values is: 35576.6
+
+--------TASK 6----------
+ -- starting construction of C and D matrices with k= 40--
+S dimensions: 256 x 1
+C dimensions: 341 x 40
+D dimensions: 256 x 40
+Non-zero elements of C with k= 40  are: 
+13640
+Non-zero elements of D with k= 40  are: 
+10240
+ -- starting construction of C and D matrices with k= 80--
+S dimensions: 256 x 1
+C dimensions: 341 x 80
+D dimensions: 256 x 80
+Non-zero elements of C with k= 80  are: 
+27280
+Non-zero elements of D with k= 80  are: 
+20480
+
+--------TASK 7----------
+C dimensions: 341 x 40
+D dimensions: 40 x 256
+Compressed Image dimensions: 341 x 256
+image created: results/compressedA40.png
+C dimensions: 341 x 80
+D dimensions: 80 x 256
+Compressed Image dimensions: 341 x 256
+image created: results/compressedA80.png
+
+--------TASK 8----------
+image created: results/checkerboard.png
+
+--------TASK 9----------
+image created: results/noisy_image.png
+
+--------TASK 10----------
+The Euclidean norm of the singular values is: 36479.7
+The 2 largest singular values are: 
+25510.4
+25442.8
+
+--------TASK 11----------
+ -- starting construction of C and D matrices with k= 5--
+S dimensions: 200 x 1
+C dimensions: 200 x 5
+D dimensions: 200 x 5
+Non-zero elements of C with k= 5  are: 
+1000
+Non-zero elements of D with k= 5  are: 
+1000
+ -- starting construction of C and D matrices with k= 10--
+S dimensions: 200 x 1
+C dimensions: 200 x 10
+D dimensions: 200 x 10
+Non-zero elements of C with k= 10  are: 
+2000
+Non-zero elements of D with k= 10  are: 
+2000
+
+--------TASK 12----------
+C dimensions: 200 x 5
+D dimensions: 5 x 200
+Compressed Image dimensions: 200 x 200
+image created: results/compressedCheckerBoard5.png
+C dimensions: 200 x 10
+D dimensions: 10 x 200
+Compressed Image dimensions: 200 x 200
+image created: results/compressedCheckerBoard10.png
+
+--------TASK 13----------
+Mean Square Error between original checkerboard and compressed checkerboard with k=5: 61.916
+Mean Square Error between original checkerboard and compressed checkerboard with k=10: 131.546
+Mean Square Error between original checkerboard and noisy checkerboard: 832.017
+Mean Square Error between original image and compressed image with k=40: 218.85
+Mean Square Error between original image and compressed image with k=80: 80.343
+
+From the results obtained, the checkerboard image follows two color scheme, lower Mean Square Error(MSE) calculations compared to the original: compressed images {k=5, MSE= 61.916},{k=10,131.546}, and noisy image{MSE= 832.017} better the image quality gets and more visually similar to the original with respect to compression and noise.
+
+
+While, the original Einstein image follows complex multi-tone color scheme, higher Mean Square Error calculations (compared to the original {k=40, MSE= 218.85},{k=80, 80.343} lesser the image quality compression and noise. 
+Higher k values restore most of the image’s features while still reducing the impact of random noise.
+
