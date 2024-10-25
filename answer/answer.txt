@@ -139,8 +139,3 @@ Mean Square Error between original image and compressed image with k=40: 218.85
 Mean Square Error between original image and compressed image with k=80: 80.343
 
 From the results obtained, the checkerboard image follows two color scheme, lower Mean Square Error(MSE) calculations compared to the original: compressed images {k=5, MSE= 61.916},{k=10,131.546}, and noisy image{MSE= 832.017} better the image quality gets and more visually similar to the original with respect to compression and noise.
-
-
-While, the original Einstein image follows complex multi-tone color scheme, higher Mean Square Error calculations (compared to the original {k=40, MSE= 218.85},{k=80, 80.343} lesser the image quality compression and noise. 
-Higher k values restore most of the image’s features while still reducing the impact of random noise.
-
