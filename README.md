@@ -80,20 +80,21 @@ SVD and image processing involve complex matrix operations, making efficient num
 We use the **Eigen** and **LIS** libraries for matrix manipulation, SVD computation, and solving linear systems. Here's an overview of the key libraries and headers used:
 
 ```cpp
-#include <Eigen/Dense>
-#include <Eigen/SVD>
-#include <unsupported/Eigen/SparseExtra>
+#include <Eigen/IterativeLinearSolvers> 
+#include <cstring>
 #include <iostream>
+#include <sstream>
+#include <cstdlib>
+#include <tuple>
+#include <utility>
+#include <algorithm>
 #include <fstream>
-
-// Image processing libraries
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
-// LIS library headers
-#include "lis.h"
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <cmath>
+#include <array>
 ```
 
 ---
