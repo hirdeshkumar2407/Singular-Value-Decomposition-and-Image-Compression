@@ -33,9 +33,9 @@ The largest eigenvalue of the A and A transpose matrix product by LIS library me
 Sqaure Root Eigenvalue by LIS: 32339.1
 
 Single Value by Eigen library: 32339.1
-The two values are not equal.0.00600781
+The two values are approximately equal. .0.00600781
 
---------TASK 4---------- Not sure
+--------TASK 4---------- 
 
 number of processes = 1
 matrix size = 256 x 256 (65536 nonzero entries)
@@ -93,6 +93,8 @@ image created: results/compressedA80.png
 
 --------TASK 8----------
 image created: results/checkerboard.png
+The norm of the checkerboard matrix is: 36062
+
 
 --------TASK 9----------
 image created: results/noisy_image.png

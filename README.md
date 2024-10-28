@@ -244,6 +244,7 @@ This project implements several tasks related to SVD and image processing:
         
     --------TASK 8----------
     image created: results/checkerboard.png
+    The norm of the checkerboard matrix is: 36062
 
 <br><img src="code/results/checkerboard.png"> </br>
 
@@ -316,7 +317,10 @@ This project implements several tasks related to SVD and image processing:
          <h5>Result:</h5>
          
     --------TASK 13----------
-   
+    Mean Square Error between original checkerboard and compressed checkerboard with k=5: 61.916
+    Mean Square Error between original checkerboard and compressed checkerboard with k=10: 131.546
+    Mean Square Error between original checkerboard and noisy checkerboard: 832.017
+
     From the results obtained, the checkerboard image follows two color scheme, lower Mean Square Error(MSE) calculations compared to the original: compressed images {k=5, MSE= 61.916},{k=10,131.546}, and noisy image{MSE= 832.017} better the image quality gets and more visually similar to the original with respect to compression and noise.
 </ol>
 ---

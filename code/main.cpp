@@ -272,10 +272,14 @@ MatrixXd createCheckerBoard(int img_size,int square_size){
             }
         }
     }
-
+  
     normalizeExportImage(nullptr, "checkerboard", "png", checkerboard, 200, 200);
+    
+     int norm = checkerboard.norm();
+    
+     cout << "The norm of the checkerboard matrix is: " << norm << endl;
 
-    return checkerboard;
+     return checkerboard;
 }
 
 MatrixXd addNoisetoImage(int width, int height, MatrixXd image_matrix)
@@ -398,10 +402,10 @@ int main(int argc, char *argv[]){
     double mse_noisy = computeMeanSquareError(checkerboard,noisyCheckerBoard);
     cout << "Mean Square Error between original checkerboard and noisy checkerboard: " << mse_noisy << endl;
 
-    double mse_A40 = computeMeanSquareError(image_matrix,compressedA40);
-    cout << "Mean Square Error between original image and compressed image with k=40: " << mse_A40 << endl;
+  //  double mse_A40 = computeMeanSquareError(image_matrix,compressedA40);
+ //   cout << "Mean Square Error between original image and compressed image with k=40: " << mse_A40 << endl;
 
-     double mse_A80 = computeMeanSquareError(image_matrix,compressedA80);
-    cout << "Mean Square Error between original image and compressed image with k=80: " << mse_A80 << endl;
+  //   double mse_A80 = computeMeanSquareError(image_matrix,compressedA80);
+  //  cout << "Mean Square Error between original image and compressed image with k=80: " << mse_A80 << endl;
     return 0;
 }
