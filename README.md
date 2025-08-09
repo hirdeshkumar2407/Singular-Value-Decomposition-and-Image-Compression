@@ -2,10 +2,8 @@
 
 # Singular Value Decomposition and Image Compression
 
-## 🎯 Project Mission & My Role
+## 🎯 Project Mission
 This project was a deep dive into one of the most powerful algorithms in numerical linear algebra: Singular Value Decomposition (SVD). Our mission, as part of the "Numerical Linear Algebra" course at Politecnico di Milano, was to move beyond theory and implement a practical, high-performance solution for a real-world application: image compression and denoising.
-
-As the project lead, my role was to guide our team's strategy and ensure we built a robust and well-documented solution. I focused on architecting the overall workflow, from loading and processing images using the C++ Eigen library to comparing iterative solvers with the LIS library.
 
 This README serves as a comprehensive technical report of our findings, demonstrating a first-principles understanding of SVD and its profound applications in high-performance scientific computing.
 
@@ -342,7 +340,7 @@ This project implements several tasks related to SVD and image processing:
 
     From the results obtained, the checkerboard image follows two color scheme, lower Mean Square Error(MSE) calculations compared to the original: compressed images {k=5, MSE= 61.916},{k=10,131.546}, and noisy image{MSE= 832.017} better the image quality gets and more visually similar to the original with respect to compression and noise.
 </ol>
----
+
 
 ## 6. Results and Analysis
 
