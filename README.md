@@ -15,7 +15,7 @@ This project's success was a result of a talented and collaborative team effort,
 
 ## Contributors:
 
-= [Hirdesh Kumar](https://www.linkedin.com/in/hirdeshkumar2407/)
+- [Hirdesh Kumar](https://www.linkedin.com/in/hirdeshkumar2407/)
 
 - [Nadah Khaled](https://www.linkedin.com/in/nadahkhaledd10/)
 
@@ -23,6 +23,7 @@ This project's success was a result of a talented and collaborative team effort,
 
 ## Guidance:
 - **Professor [P. F. Antonietti](https://www.linkedin.com/in/paolaantonietti/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_all%3BtoYfzDyNQUuaYhVlXkVXMQ%3D%3D)**
+
 - **Teaching Assistant [Dott. M. Botti](https://www.linkedin.com/in/michele-botti-4707a62a2/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_all%3BFvI80B0lRXiNyhRyRoR13Q%3D%3D)**
 
 
@@ -357,7 +358,7 @@ This project implements several tasks related to SVD and image processing:
 
 This project demonstrates the power of Singular Value Decomposition in image processing, particularly for compression and noise reduction. It showcases the practical application of numerical linear algebra techniques and the use of efficient libraries like Eigen and LIS for complex matrix operations.
 
---
+---
 
 
 
