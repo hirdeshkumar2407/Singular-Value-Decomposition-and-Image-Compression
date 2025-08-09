@@ -2,11 +2,29 @@
 
 # Singular Value Decomposition and Image Compression
 
-## Project Overview
+## 🎯 Project Mission & My Role
+This project was a deep dive into one of the most powerful algorithms in numerical linear algebra: Singular Value Decomposition (SVD). Our mission, as part of the "Numerical Linear Algebra" course at Politecnico di Milano, was to move beyond theory and implement a practical, high-performance solution for a real-world application: image compression and denoising.
 
-This project demonstrates the implementation of image compression and noise reduction using **Singular Value Decomposition (SVD)** with **C++** and the **Eigen** library. The focus is on applying SVD to perform tasks such as **image compression**, **noise reduction**, and **eigenvalue computation**, while also exploring the use of the **LIS library** for iterative solvers.
+As the project lead, my role was to guide our team's strategy and ensure we built a robust and well-documented solution. I focused on architecting the overall workflow, from loading and processing images using the C++ Eigen library to comparing iterative solvers with the LIS library.
+
+This README serves as a comprehensive technical report of our findings, demonstrating a first-principles understanding of SVD and its profound applications in high-performance scientific computing.
 
 ---
+## 🤝 The Team
+This project's success was a result of a talented and collaborative team effort, with invaluable guidance from our teaching staff.
+
+## Contributors:
+
+= [Hirdesh Kumar](https://www.linkedin.com/in/hirdeshkumar2407/)
+
+- [Nadah Khaled](https://www.linkedin.com/in/nadahkhaledd10/)
+
+- [Milica Sanjevic](https://www.linkedin.com/in/milica-sanjevic-321392327/)
+
+## Guidance:
+- **Professor [P. F. Antonietti](https://www.linkedin.com/in/paolaantonietti/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_all%3BtoYfzDyNQUuaYhVlXkVXMQ%3D%3D)**
+- **Teaching Assistant [Dott. M. Botti](https://www.linkedin.com/in/michele-botti-4707a62a2/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_all%3BFvI80B0lRXiNyhRyRoR13Q%3D%3D)**
+
 
 ## 1. Singular Value Decomposition (SVD)
 
@@ -340,24 +358,7 @@ This project implements several tasks related to SVD and image processing:
 This project demonstrates the power of Singular Value Decomposition in image processing, particularly for compression and noise reduction. It showcases the practical application of numerical linear algebra techniques and the use of efficient libraries like Eigen and LIS for complex matrix operations.
 
 --
-## Acknowledgements
 
-This was challenge 2 assigned as part of the course **Numerical Linear Algebra in High-Performance Computing (2024/25)** at **Politecnico di Milano**. We extend our sincere gratitude to:
-
-- **Professor [P. F. Antonietti](https://www.linkedin.com/in/paolaantonietti/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_all%3BtoYfzDyNQUuaYhVlXkVXMQ%3D%3D)**, for providing excellent guidance throughout the course.
-- **Teaching Assistant [Dott. M. Botti](https://www.linkedin.com/in/michele-botti-4707a62a2/?lipi=urn%3Ali%3Apage%3Ad_flagship3_search_srp_all%3BFvI80B0lRXiNyhRyRoR13Q%3D%3D)**, for their support and valuable feedback on this project.
-
-This project has significantly enhanced our understanding of **numerical methods**, **image processing**, and their applications in **high-performance computing**.
-
-
-
-
-## Contributors 
-[Hirdesh Kumar](https://www.linkedin.com/in/hirdeshkumar2407/)
-
-[Nadah Khaled](https://www.linkedin.com/in/nadahkhaledd10/)
-
-[Milica Sanjevic](https://www.linkedin.com/in/milica-sanjevic-321392327/)
 
 
 
